@@ -1,0 +1,41 @@
+---
+- name: Manage Linux User Account
+  hosts: all
+  become: true
+
+  vars:
+    new_username: "devops_user"
+    new_user_comment: "DevOps Engineer"
+    # To generate a secure password hash, run: 
+    # python3 -c "import crypt; print(crypt.crypt('YourPlaintextPassword', crypt.mksalt(crypt.METHOD_SHA512)))"
+    new_user_password_hash: "$6$rounds=65535$saltstringhere$HashedPasswordOutputGoesHere..."
+    ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG... user@example.com"
+
+  tasks:
+    - name: Ensure the user group exists (optional, user module creates it by default)
+      ansible.builtin.group:
+        name: "{{ new_username }}"
+        state: present
+
+    - name: Create or update the user account
+      ansible.builtin.user:
+        name: "{{ new_username }}"
+        comment: "{{ new_user_comment }}"
+        shell: "/bin/bash"
+        password: "{{ new_user_password_hash }}"
+        groups: 
+          - wheel  # Use 'sudo' on Ubuntu/Debian systems instead of 'wheel'
+        append: true
+        state: present
+        create_home: true
+
+    - name: Set up authorized SSH key for the user
+      ansible.builtin.authorized_key:
+        user: "{{ new_username }}"
+        state: present
+        key: "{{ ssh_public_key }}"
+
+    - name: Ensure password expiry / forcing change settings (Optional)
+      ansible.builtin.command: "chage -d 0 {{ new_username }}"
+      changed_when: false
+      when: false # Set to 'true' if you want the user to change their password on first login
