@@ -1,0 +1,30 @@
+---
+- name: Power Cycle HPE Server via iLO Redfish
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    ilo_ip: "192.168.1.100"
+    ilo_user: "administrator"
+    ilo_password: "YourSecurePassword123"
+    # Reset types include: ForceRestart, GracefulRestart, PowerCycle, On, ForceOff
+    reset_action: "PowerCycle"
+
+  tasks:
+    - name: Send Redfish Reset Command to iLO
+      ansible.builtin.uri:
+        url: "https://{{ ilo_ip }}/redfish/v1/Systems/1/Actions/ComputerSystem.Reset"
+        method: POST
+        user: "{{ ilo_user }}"
+        password: "{{ ilo_password }}"
+        force_basic_auth: true
+        body_format: json
+        body:
+          ResetType: "{{ reset_action }}"
+        status_code: [200, 204]
+        validate_certs: false
+      register: redfish_response
+
+    - name: Display iLO Response
+      ansible.builtin.debug:
+        msg: "Server power cycle command sent successfully. Response status: {{ redfish_response.status }}"
