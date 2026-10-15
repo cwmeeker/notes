@@ -1,0 +1,31 @@
+---
+- name: Perform AuxCycle on HPE ProLiant Servers via iLO Redfish API
+  hosts: ilo_servers
+  connection: local
+  gather_facts: false
+
+  vars:
+    # Use Ansible Vault or AWX Credentials for production environments
+    ilo_username: "{{ ansible_user | default('Administrator') }}"
+    ilo_password: "{{ ansible_password }}"
+    redfish_action_uri: "/redfish/v1/Systems/1/Actions/Oem/Hp/ComputerSystemExt.SystemReset/"
+
+  tasks:
+    - name: Send AuxCycle SystemReset command to iLO
+      ansible.builtin.uri:
+        url: "https://{{ inventory_hostname }}{{ redfish_action_uri }}"
+        method: POST
+        user: "{{ ilo_username }}"
+        password: "{{ ilo_password }}"
+        force_basic_auth: true
+        body_format: json
+        body:
+          Action: "SystemReset"
+          ResetType: "AuxCycle"
+        status_code: [200, 204]
+        validate_certs: false # Set to true if you have valid iLO SSL certificates configured
+      register: auxcycle_result
+
+    - name: Display response status
+      ansible.builtin.debug:
+        msg: "AuxCycle successfully triggered for {{ inventory_hostname }}. Status code: {{ auxcycle_result.status }}"
