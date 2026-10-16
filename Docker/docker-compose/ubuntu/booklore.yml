@@ -1,0 +1,42 @@
+services:
+  booklore:
+    image: ghcr.io/booklore-app/booklore:latest
+    container_name: booklore
+    environment:
+      - USER_ID=0
+      - GROUP_ID=0
+      - TZ=America/New_York
+      - DATABASE_URL=jdbc:mariadb://mariadb:3306/booklore
+      - DATABASE_USERNAME=booklore_user
+      - DATABASE_PASSWORD=ChangeMe_BookLoreApp_2025!
+      - BOOKLORE_PORT=6060
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    ports:
+      - "6060:6060"
+    volumes:
+      - /home/docker_vols/booklore/data:/app/data
+      - /home/docker_vols/booklore/books:/books
+      - /home/docker_vols/booklore/bookdrop:/bookdrop
+    restart: unless-stopped
+
+  mariadb:
+    image: lscr.io/linuxserver/mariadb:11.4.5
+    container_name: mariadb
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+      - MYSQL_ROOT_PASSWORD=super_root_pw_2026!
+      - MYSQL_DATABASE=booklore
+      - MYSQL_USER=booklore_user
+      - MYSQL_PASSWORD=ChangeMe_BookLoreApp_2025!
+    volumes:
+      - /home/docker_vols/booklore/db_data:/var/lib/mysql:rw
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "mariadb-admin", "ping", "-h", "localhost" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10

@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  filebrowser:
+    container_name: filebrowser
+    image: hurlenko/filebrowser:latest
+    restart: unless-stopped
+    ports:
+      - 8843:8080
+    volumes:
+      - /mnt/external-drive-3T:/data
+      - /home/docker_vols/filebrowser/config:/config

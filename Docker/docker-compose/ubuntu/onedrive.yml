@@ -1,0 +1,10 @@
+version: "3.3"
+services:
+  onedrive:
+    #image: driveone/onedrive:edge
+    image: driveone/onedrive:latest
+    container_name: onedrive
+    volumes:
+      - /mnt/external-drive-1T/onedrive/config:/onedrive/conf
+      - /mnt/external-drive-1T/onedrive/data:/onedrive/data
+    restart: unless-stopped

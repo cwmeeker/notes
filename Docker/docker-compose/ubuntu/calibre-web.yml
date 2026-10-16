@@ -1,0 +1,16 @@
+services:
+  calibre-web:
+    image: lscr.io/linuxserver/calibre-web:latest
+    container_name: calibre-web
+    ports:
+      - 8083:8083
+    environment:
+      - PUID=1001
+      - PGID=1004
+      - TZ=America/New_York
+      - DOCKER_MODS=linuxserver/mods:universal-calibre #optional
+    volumes:
+      - /home/docker_vols/calibre-web/config:/config
+      - /home/docker_vols/calibre-web/data/:/books
+      - /opt/calibre:/convert/
+    restart: unless-stopped

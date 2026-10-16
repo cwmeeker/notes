@@ -1,0 +1,12 @@
+version: '3'
+services:
+  ethan-webpage:
+    container_name: ethan-webpage
+    hostname: ethan.meeker-online.net
+    image: httpd:latest
+    volumes:
+      - /home/docker_vols/httpd/ethan-webpage/www:/usr/local/apache2/htdocs/
+#      - /home/docker_vols/httpd/ethan-webpage/conf:/usr/local/apache2/conf/
+    ports:
+      - 8088:80
+    restart: unless-stopped

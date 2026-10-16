@@ -1,0 +1,19 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    environment:
+      # - PUID=1000
+      # - PGID=1000
+      - TZ=America/New_York
+      - HOMEPAGE_ALLOWED_HOSTS=homepage.meeker.local,homepage.meeker.lan,192.168.1.204:3300
+    volumes:
+      - /home/docker_vols/homepage/home/config:/app/config
+      - /home/docker_vols/homepage/config/images:/app/public/images
+      - /home/docker_vols/homepage/config/icons:/app/public/icons
+#      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+#      - 8880:80
+#      - 8443:443
+      - 3300:3000
+    restart: unless-stopped
