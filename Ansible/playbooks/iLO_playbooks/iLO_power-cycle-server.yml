@@ -21,7 +21,7 @@
         body_format: json
         body:
           ResetType: "{{ reset_action }}"
-        status_code: [200, 204]
+        status_code: [200, 202, 204]
         validate_certs: false
       register: redfish_response
 
