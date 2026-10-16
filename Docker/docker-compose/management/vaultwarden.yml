@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  vaultwarden:
+    container_name: vaultwarden
+    image: vaultwarden/server:latest
+    restart: unless-stopped
+    volumes:
+      - /home/docker_vols/vaultwarden/bw-data/:/data/
+    environment:
+      - ADMIN_TOKEN=YGxPkiRfeLdXSgvvDH2c6m4mt9OM7msbcpFyh0cSkc70HWYJZKxNiZjpXcRkbQzPzxXeDpmLwxHnGkuS4uQDPcrv78j5dRms3ve
+    ports:
+      - 8080:80

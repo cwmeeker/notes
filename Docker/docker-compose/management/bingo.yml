@@ -1,0 +1,7 @@
+services:
+  bingo-hall:
+    image: ghcr.io/cwmeeker/bingo-hall:latest
+    container_name: bingo-hall
+    restart: unless-stopped
+    ports:
+      - "8887:8080"

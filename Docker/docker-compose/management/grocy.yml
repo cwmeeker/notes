@@ -1,0 +1,13 @@
+services:
+  grocy:
+    image: lscr.io/linuxserver/grocy:latest
+    container_name: grocy
+    environment:
+      - PUID=1000 # Replace with your local user ID
+      - PGID=1000 # Replace with your local group ID
+      - TZ=America/New_York # Change to your timezone
+    volumes:
+      - /home/docker_vols/grocy/config:/config # Persists your data, settings, and database
+    ports:
+      - 9283:80 # Exposes Grocy on port 9283 of your host machine
+    restart: unless-stopped

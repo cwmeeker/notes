@@ -1,0 +1,9 @@
+
+version: "3.3"
+services:
+  grafana:
+    image: teddysun/kms
+    container_name: kms-server
+    ports:
+      - 1688:1688
+    restart: unless-stopped
