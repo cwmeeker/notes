@@ -1,0 +1,17 @@
+version: '3.3'
+services:
+  stirling-pdf:
+    container_name: stirling_pdf
+    image: frooodle/s-pdf:latest
+    restart: unless-stopped
+    ports:
+      - '8080:8080'
+    volumes:
+#     - /home/:/usr/share/tessdata #Required for extra OCR languages
+      - /home/docker_vols/stirling-pdf/configs:/configs
+      - /home/docker_vols/stirling-pdf/customFiles:/customFiles/
+      - /home/docker_vols/stirling-pdf/logs:/logs/
+    environment:
+      - DOCKER_ENABLE_SECURITY=false
+      - INSTALL_BOOK_AND_ADVANCED_HTML_OPS=false
+      - LANGS=en_US

@@ -1,0 +1,15 @@
+services:
+  freecad:
+    image: lscr.io/linuxserver/freecad:latest
+    container_name: freecad
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+      - CUSTOM_USER=freecad
+      - CUSTOM_PASSWORD=freecad
+    ports:
+      - 3000:3000
+    volumes:
+      - /home/docker_vols/free_cad/config:/config
+    restart: unless-stopped

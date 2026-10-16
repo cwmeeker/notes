@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  lubelogger:
+    image: ghcr.io/hargata/lubelogger:latest
+    container_name: lube_logger
+    mem_limit: 4g
+    cpu_shares: 1024
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    volumes:
+      - /home/docker_vols/lubelogger/config:/App/config
+      - /home/docker_vols/lubelogger/data:/App/data
+      - /home/docker_vols/lubelogger/documents:/App/wwwroot/documents
+      - /home/docker_vols/lubelogger/images:/App/wwwroot/images
+      - /home/docker_vols/lubelogger/log:/App/log
+      - /home/docker_vols/lubelogger/keys:/root/.aspnet/DataProtection-Keys
+    ports:
+      - 8054:8080

@@ -1,0 +1,40 @@
+networks:
+  access-bridge:
+    driver: bridge
+  application-bridge:
+    driver: bridge
+
+services:
+  ejbca-database:
+    container_name: ejbca-database
+    image: "library/mariadb:latest"
+    restart: on-failure
+    networks:
+      - application-bridge
+    environment:
+      - MYSQL_ROOT_PASSWORD=64166416@Rxu
+      - MYSQL_DATABASE=ejbca
+      - MYSQL_USER=ejbca
+      - MYSQL_PASSWORD=64166416@Rxu
+    volumes:
+      - /home/docker_vols/pki/db:/var/lib/mysql:rw
+
+  ejbca-node1:
+    hostname: ejbca-node1
+    container_name: ejbca
+    image: keyfactor/ejbca-ce:latest
+    restart: on-failure
+    depends_on:
+      - ejbca-database
+    networks:
+      - access-bridge
+      - application-bridge
+    environment:
+      - DATABASE_JDBC_URL=jdbc:mariadb://ejbca-database:3306/ejbca?characterEncoding=UTF-8
+      - LOG_LEVEL_APP=INFO
+      - LOG_LEVEL_SERVER=INFO
+      - DATABASE_PASSWORD=64166416@Rxu
+      - TLS_SETUP_ENABLED=later
+    ports:
+      - "8888:8080"
+      - "8443:8443"

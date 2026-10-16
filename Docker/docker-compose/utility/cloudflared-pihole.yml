@@ -1,0 +1,59 @@
+version: "3.5"
+networks:
+  network-pihole:
+    name: "dns-pihole"
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.10.0.0/24
+
+services:
+  cloudflared:
+    image: crazymax/cloudflared:latest
+    container_name: cloudflared
+    #network_mode: "host"
+    ports:
+      - '5053:5053/udp'
+      - '5053:5053/tcp'
+    environment:
+      TZ: 'America/New_York'
+      TUNNEL_DNS_UPSTREAM: 'https://1.1.1.1/dns-query,https://1.0.0.1/dns-query'
+    restart: unless-stopped
+    networks:
+      network-pihole:
+        ipv4_address: 192.10.0.2
+
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    hostname: pihole-container
+    #network_mode: "host"
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      #- "67:67/udp"
+      - "80:80/tcp"
+      - "443:443/tcp"
+    environment:
+      TZ: 'America/New_York'
+      FTLCONF_webserver_api_password: 'Context5ResidentUsage'
+      FTLCONF_dns_listeningMode: 'all'
+      PIHOLE_DNS_: '192.10.0.2#5053'
+      FTLCONF_LOCAL_IPV4: '192.10.0.3'
+      # FTLCONF_misc_etc_dnsmasq_d: true
+    dns:
+      - 127.0.0.1
+      - 1.1.1.1
+     #- 9.9.9.9
+    # Volumes store your data between container upgrades
+    volumes:
+      - "/home/docker_vols/piholev6/pihole:/etc/pihole/"
+      - "/home/docker_vols/piholev6/dnsmasq.d:/etc/dnsmasq.d/"
+    cap_add:
+      - NET_ADMIN
+      - CAP_CHOWN
+      - CAP_SYS_TIME
+    restart: unless-stopped
+    networks:
+      network-pihole:
+        ipv4_address: 192.10.0.3

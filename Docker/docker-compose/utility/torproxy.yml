@@ -1,0 +1,17 @@
+version: '3.3'
+services:
+  torproxy:
+    container_name: torproxy
+    network_mode: host
+    image: dperson/torproxy
+    restart: unless-stopped
+    environment:
+      - TORUSER=root
+      - TZ=America/New_York
+      - LOCATION=US
+    volumes:
+      - /home/docker_vols/torproxy/:/etc/tor/
+      - /home/docker_vols/torproxy/lib:/var/lib/tor
+    ports:
+      - 8118:8118
+      - 9050:9050

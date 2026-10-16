@@ -1,0 +1,16 @@
+version: "2.1"
+
+services:
+  jupyter:
+    container_name: jupyter
+    image: quay.io/jupyter/datascience-notebook:2024-05-27
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+      - PASSWORD=6416@Rxu
+    volumes:
+      - /home/docker_vols/jupyter/config:/home/meeker/work
+    ports:
+      - 8088:8888
