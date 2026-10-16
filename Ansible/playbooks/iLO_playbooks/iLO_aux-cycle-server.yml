@@ -5,7 +5,7 @@
   gather_facts: false
 
   vars:
-    ilo_base_url: "https://{{ ilo_host }}"
+    ilo_base_url: "https://{{ ilo_ip }}"
     auxcycle_uri: >-
       {{ ilo_base_url }}/redfish/v1/Systems/1/Actions/Oem/Hpe/HpeComputerSystemExt.SystemReset/
 
