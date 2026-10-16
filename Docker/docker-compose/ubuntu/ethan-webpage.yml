@@ -1,4 +1,3 @@
-version: '3'
 services:
   ethan-webpage:
     container_name: ethan-webpage

@@ -1,19 +1,12 @@
-version: '3.3'
-
 services:
-  qbittorrent:
-    container_name: qbittorrent
-    image: lscr.io/linuxserver/qbittorrent:latest
-    restart: unless-stopped
+  rachel-webpage:
+    container_name: rachel-webpage
+    hostname: rachel.meeker-online.net
+    image: httpd:latest
     environment:
-      - PUID=1000
-      - PGID=1000
       - TZ=America/New_York
-      - WEBUI_PORT=8080
     volumes:
-      - /home/docker_vols/qbittorrent/config:/config
-      - /mnt/external-drive-3T/qbittorrent/Downloads:/downloads
+      - /home/docker_vols/httpd/rachel-webpage/www:/usr/local/apache2/htdocs/
     ports:
-      - 8080:8080/tcp
-      - 6881:6881/tcp
-      - 6881:6881/udp
+      - 9088:80
+    restart: unless-stopped
