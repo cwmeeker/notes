@@ -1,0 +1,36 @@
+---
+
+- hosts: all
+  gather_facts: no
+
+  tasks:
+
+    - name: Gather subsets of Ansible facts
+      ansible.builtin.setup:
+        gather_subset:
+          - env
+      delegate_to: localhost
+      run_once: yes
+
+    - name: Gather the AHS log(s)
+      uri:
+        # method: PATCH
+        # headers:
+        #   Content-Type: "application/json"
+        user: "{{ ilo_username }}"
+        password: "{{ ilo_password }}"
+        url: "https://{{ ilo_ipv4 }}/ahsdata/ahs.ahs?days=7"
+        # src: roles/key_manager/files/uat_key_manager_ips.json
+        dest: "/tmp/{{ inventory_hostname }}.bin"
+        force_basic_auth: yes
+        validate_certs: no
+      # become: yes
+      # register: patch_result
+      delegate_to: localhost
+
+    - name: Copy file to web
+      copy:
+        src: "/tmp/{{ inventory_hostname }}.bin"
+        dest: "/usr/share/nginx/html/AHS_logs/{{ inventory_hostname }}_{{ ansible_date_time.iso8601_basic_short }}.ahs"
+      become: yes
+      delegate_to: localhost
