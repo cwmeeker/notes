@@ -1,0 +1,49 @@
+---
+
+- hosts: all
+  gather_facts: no
+
+  tasks:
+
+    - name: Create a Session on the iLO
+      uri:
+        url: "https://{{ ilo_ipv4 }}/redfish/v1/SessionService/Sessions"
+        method: POST
+        body: |
+          {
+            "UserName": "{{ ilo_username }}",
+            "Password": "{{ ilo_password }}"
+          }
+        body_format: json
+        validate_certs: no
+        # force_basic_auth: yes
+      register: login_response
+      delegate_to: localhost
+      failed_when: login_response.status != 201
+      ignore_errors: yes
+      no_log: true
+
+    - name: Deploy iLO SSL Certificate
+      uri:
+        method: POST
+        headers:
+          Content-Type: "application/json"
+          X-Auth-Token: "{{ login_response.x_auth_token }}"
+        # user: "{{ ilo_username }}"
+        # password: "{{ ilo_password }}"
+        url: "https://{{ ilo_ipv4 }}/redfish/v1/Managers/1/SecurityService/HttpsCert/Actions/HpeHttpsCert.ImportCertificate"
+        # force_basic_auth: yes
+        validate_certs: no
+        body_format: json
+        body: |
+          {
+            "Action": "ImportCertificate",
+            "Certificate": "{{ lookup('file', 'private/ilo_certs/{{ ilo_cert_name }}.pem') }}"
+          }
+      delegate_to: localhost
+      no_log: true
+
+    - name: Wait for iLO to Reset
+      pause:
+        seconds: 200
+
