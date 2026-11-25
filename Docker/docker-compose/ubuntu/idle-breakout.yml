@@ -1,6 +1,6 @@
 services:
   idle-breakout:
-    image: ghcr.io/<your-github-username>/idle-breakout:latest
+    image: ghcr.io/cwmeeker/idle-breakout:latest
     container_name: idle-breakout
     restart: unless-stopped
     ports:
